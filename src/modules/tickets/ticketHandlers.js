@@ -128,6 +128,18 @@ export async function handleButton(interaction) {
     ]);
     return;
   }
+  if (customId === 'pay_accept' || customId === 'pay_decline') {
+    const developerRole = guild.roles.cache.find(r => r.name === 'Developer');
+    if (!developerRole) {
+      return interaction.reply({ content: 'Developer role not found.', ephemeral: true });
+    }
+    if (interaction.member.roles.highest.position <= developerRole.position) {
+      return interaction.reply({ content: 'You do not have permission to confirm payments.', ephemeral: true });
+    }
+    const action = customId === 'pay_accept' ? 'accepted' : 'declined';
+    await interaction.update({ content: `Payment ${action} by ${interaction.user.tag}.`, embeds: [], components: [] });
+    return;
+  }
 }
 
 export async function handleModal(interaction) {
