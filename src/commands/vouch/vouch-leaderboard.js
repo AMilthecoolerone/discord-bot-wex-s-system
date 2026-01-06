@@ -8,7 +8,7 @@ export default {
     .setDescription('Show staff leaderboard by average rating (min vouch count)')
     .addIntegerOption(o => o.setName('min').setDescription('Minimum number of vouches to be ranked').setMinValue(1).setMaxValue(20)),
   async execute(interaction) {
-    const min = interaction.options.getInteger('min') || 3;
+    const min = interaction.options.getInteger('min') || 1;
     const rows = await aggregateLeaderboard(interaction.guild.id, min);
     if (!rows.length) return interaction.reply({ content: 'No leaderboard data yet.', ephemeral: true });
 
