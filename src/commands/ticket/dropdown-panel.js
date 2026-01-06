@@ -31,10 +31,10 @@ export default {
       .setCustomId('ticket_dropdown_select')
       .setPlaceholder('Choose a ticket category')
       .addOptions([
-        { label: 'Support', value: 'support', description: 'General or technical support' },
-        { label: 'Building Service', value: 'building_services', description: 'Request a build / see prices' },
-        { label: 'Market', value: 'market', description: 'Buying / selling' },
-        { label: 'Giveaway Claim', value: 'giveaway_claim', description: 'Claim your prize' }
+        { label: '🧑‍💻Support', value: 'support', description: 'General or technical support' },
+        { label: '🏗️Building Service', value: 'building_services', description: 'Request a build / see prices' },
+        { label: '💹Market', value: 'market', description: 'Buying / selling' },
+        { label: '🤚Giveaway Claim', value: 'giveaway_claim', description: 'Claim your prize' }
       ]);
 
     const row = new ActionRowBuilder().addComponents(select);
