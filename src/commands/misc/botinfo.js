@@ -16,7 +16,7 @@ export default {
 
     const embed = new EmbedBuilder()
       .setTitle('🤖 Bot Information')
-      .setColor(process.env.EMBED_COLOR || '#09f711ff')
+      .setColor(process.env.EMBED_COLOR || '#5865F2')s
       .setThumbnail(client.user.displayAvatarURL())
       .addFields(
         { name: 'Tag', value: client.user.tag, inline: true },
