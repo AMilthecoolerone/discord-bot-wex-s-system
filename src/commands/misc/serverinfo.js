@@ -12,7 +12,7 @@ export default {
 
     const embed = new EmbedBuilder()
       .setTitle(`🏠 Server Info`)
-      .setColor(process.env.EMBED_COLOR || '#5865F2')
+      .setColor(process.env.EMBED_COLOR)
       .setThumbnail(guild.iconURL({ dynamic: true }))
       .addFields(
         { name: 'Name', value: guild.name, inline: true },
