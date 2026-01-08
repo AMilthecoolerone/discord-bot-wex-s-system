@@ -1,5 +1,6 @@
 import { logger } from '../utils/logger.js';
 import { handleButton, handleModal, handleSelect } from '../modules/tickets/ticketHandlers.js';
+import { handleBuilderButton, handleBuilderModal } from '../modules/builder/builderHandlers.js';
 
 export default {
   name: 'interactionCreate',
@@ -11,14 +12,24 @@ export default {
         await cmd.execute(interaction, client);
 
       } else if (interaction.isButton()) {
-        await handleButton(interaction);
+        // Check if it's a builder application button first
+        if (interaction.customId === 'builder_apply_start') {
+          await handleBuilderButton(interaction);
+        } else {
+          await handleButton(interaction);
+        }
 
       } else if (interaction.isStringSelectMenu && interaction.isStringSelectMenu()) {
         // Backward-safe check; in d.js v14 this returns a function; v14+ exposes method.
         await handleSelect(interaction);
 
       } else if (interaction.isModalSubmit()) {
-        await handleModal(interaction);
+        // Check if it's a builder application modal first
+        if (interaction.customId.startsWith('builder_modal_')) {
+          await handleBuilderModal(interaction);
+        } else {
+          await handleModal(interaction);
+        }
       }
     } catch (err) {
       logger.error('Interaction error', err);

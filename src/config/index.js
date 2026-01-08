@@ -55,4 +55,5 @@ export const config = {
   maxTicketsPerUser: parseInt(process.env.MAX_TICKETS_PER_USER || '1', 10),
   commandScope: (process.env.COMMAND_SCOPE || 'guild').toLowerCase(),
   imageUrl: process.env.IMAGE_URL || '',
+  builderReviewChannel: process.env.BUILDER_REVIEW_CHANNEL || 'builder-applications',
 };
