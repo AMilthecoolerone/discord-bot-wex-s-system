@@ -1,0 +1,35 @@
+[
+  {
+    "guildId": "1444007119790669908",
+    "userId": "789568490334978048",
+    "applicationId": "BA-1767979745858-YMT96SK",
+    "status": "denied",
+    "answers": {
+      "question_1": "test",
+      "question_2": "test",
+      "question_3": "test",
+      "question_4": "test",
+      "question_5": "test"
+    },
+    "autoRejected": false,
+    "submittedAt": "2026-01-09T17:29:05.858Z",
+    "reviewedBy": "789568490334978048",
+    "reviewedAt": "2026-01-09T17:37:00.499Z",
+    "reviewReason": "No reason provided"
+  },
+  {
+    "guildId": "1444007119790669908",
+    "userId": "1218532110323945494",
+    "applicationId": "BA-1767979755608-X0NQ8ZF",
+    "status": "pending",
+    "answers": {
+      "question_1": "100m",
+      "question_2": "wex",
+      "question_3": "wex",
+      "question_4": "wex",
+      "question_5": "wex"
+    },
+    "autoRejected": false,
+    "submittedAt": "2026-01-09T17:29:15.608Z"
+  }
+]

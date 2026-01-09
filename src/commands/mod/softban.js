@@ -3,9 +3,9 @@ export default {
   data: new SlashCommandBuilder()
     .setName('softban')
     .setDescription('Softbans a member from the server')
-    .adduseroption(option =>
+    .addUserOption(option =>
         option.setName('user').setDescription('The user to softban').setRequired(true))
-        .addstringoption(option =>
+        .addStringOption(option =>
             option.setName('reason').setDescription('The reason for the softban').setRequired(false))
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
     

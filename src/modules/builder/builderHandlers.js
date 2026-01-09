@@ -501,11 +501,12 @@ export async function handleBuilderModal(interaction) {
       });
       logger.error(`Failed to send builder application to review channel for ${user.tag} (${user.id})`);
     }
+  }
   } catch (err) {
     logger.error('Error in handleBuilderModal', err);
     if (!interaction.replied && !interaction.deferred) {
       await interaction.reply({ 
-        content: '❌ An error occurred while processing your application. Please try again later or contact staff.', 
+        content: '❌ An error occurred while processing your application. Please try again later.', 
         ephemeral: true 
       }).catch(() => {});
     }

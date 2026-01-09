@@ -46,6 +46,11 @@ export function createGiveawayEmbed(giveaway, participants = []) {
   const greenColor = '#00FF88'; // Bright green
   const darkGreen = '#00CC6A';
   
+  // Get giveaway ID - use messageId if available, otherwise generate a short ID from timestamp
+  const giveawayId = giveaway.messageId 
+    ? giveaway.messageId.slice(-6) 
+    : Date.now().toString(36).slice(-6).toUpperCase();
+
   const embed = new EmbedBuilder()
     .setTitle('🎁 GIVEAWAY')
     .setDescription(
@@ -57,7 +62,7 @@ export function createGiveawayEmbed(giveaway, participants = []) {
     )
     .setColor(greenColor)
     .setFooter({ 
-      text: `Click the button below to enter! • Giveaway ID: ${giveaway.messageId.slice(-6)}` 
+      text: `Click the button below to enter! • Giveaway ID: ${giveawayId}` 
     })
     .setTimestamp(endTime);
 

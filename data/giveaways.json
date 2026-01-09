@@ -1,0 +1,52 @@
+[
+  {
+    "guildId": "1444007119790669908",
+    "channelId": "1444052197212946433",
+    "messageId": "1459236152396742810",
+    "prize": "500",
+    "winnerCount": 2,
+    "endTime": "2026-01-09T19:23:34.114Z",
+    "createdBy": "789568490334978048",
+    "requiredRole": "1444057198346109039",
+    "minAccountAge": null,
+    "participants": [
+      "789568490334978048"
+    ],
+    "ended": false,
+    "winners": []
+  },
+  {
+    "guildId": "1444007119790669908",
+    "channelId": "1444060828985851914",
+    "messageId": "1459236276082446510",
+    "prize": "500m",
+    "winnerCount": 2,
+    "endTime": "2026-01-09T19:24:03.666Z",
+    "createdBy": "789568490334978048",
+    "minAccountAge": null,
+    "participants": [
+      "1218532110323945494",
+      "789568490334978048"
+    ],
+    "ended": false,
+    "winners": []
+  },
+  {
+    "guildId": "1444007119790669908",
+    "channelId": "1444060828985851914",
+    "messageId": "1459236433637412926",
+    "prize": "500m",
+    "winnerCount": 2,
+    "endTime": "2026-01-09T17:25:41.102Z",
+    "createdBy": "789568490334978048",
+    "requiredRole": "1456750829339152478",
+    "minAccountAge": null,
+    "participants": [
+      "789568490334978048"
+    ],
+    "ended": true,
+    "winners": [
+      "789568490334978048"
+    ]
+  }
+]
