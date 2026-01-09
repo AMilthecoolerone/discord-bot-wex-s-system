@@ -14,7 +14,10 @@ Environment variables (.env):
 - TICKET_CATEGORY: Category name where ticket channels are created (default `Tickets`)
 - MAX_TICKETS_PER_USER: Limit of open tickets per user (default `1`)
 - COMMAND_SCOPE: `guild` or `global` (default `guild`)
+- BUILDER_REVIEW_CHANNEL: Name of the builder application review channel (default `builder-applications`)
 
 Notes:
 - You can override the mod-log channel by running `/setlogchannel` once; this stores the channel ID in persistent settings.
+- You can override the builder review channel by running `/builderapplication setchannel` once; this stores the channel ID in persistent settings.
 - Ensure the `Tickets` category exists in your server for the ticket channels. You can change the name via `.env`.
+- Ensure the builder review channel exists in your server (or set it via the command).

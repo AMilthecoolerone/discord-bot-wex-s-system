@@ -25,3 +25,4 @@ export async function initStorage() {
 export const jsonInfractions = new JsonCollection('infractions');
 export const jsonSettings = new JsonCollection('settings');
 export const jsonBuilderApplications = new JsonCollection('builder-applications');
+export const jsonGiveaways = new JsonCollection('giveaways');

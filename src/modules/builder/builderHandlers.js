@@ -17,7 +17,7 @@ import {
 } from './builderModel.js';
 
 // All 12 questions exactly as specified (VERBATIM)
-const QUESTIONS = [
+export const QUESTIONS = [
   '1/12. What is your Donutsmp.net Networth ?',
   '2/12. What is your In Game Name ?',
   '3/12. How many hours a week can you spend building ?',
@@ -77,10 +77,13 @@ async function sendToReviewChannel(guild, application, user, autoRejected = fals
     ? application.submittedAt 
     : new Date(application.submittedAt || Date.now());
   
+  const applicationId = application.applicationId || 'N/A';
+  
   const embed = new EmbedBuilder()
     .setTitle('🏗️ Builder Application')
     .setColor(statusColor)
     .addFields(
+      { name: 'Application ID', value: `\`${applicationId}\``, inline: true },
       { name: 'Applicant', value: `<@${user.id}> (${user.tag})\nID: ${user.id}`, inline: true },
       { name: 'Status', value: status, inline: true },
       { name: 'Submitted', value: `<t:${Math.floor(submittedAt.getTime() / 1000)}:F>`, inline: false }
@@ -125,19 +128,31 @@ async function sendToReviewChannel(guild, application, user, autoRejected = fals
 
 // Handle button click to start application
 export async function handleBuilderButton(interaction) {
-  const { guild, user, customId } = interaction;
-  
-  if (customId === 'builder_apply_start') {
-    logger.info(`Builder application started by ${user.tag} (${user.id}) in guild ${guild.id}`);
+  try {
+    const { guild, user, customId } = interaction;
     
-    // Check for existing active application
-    const existing = await findActiveApplicationByUser(guild.id, user.id);
-    if (existing) {
-      return interaction.reply({ 
-        content: '❌ You already have a pending or rejected builder application. Please wait for staff review.', 
-        ephemeral: true 
+    if (customId === 'builder_apply_start') {
+      logger.info(`Builder application started by ${user.tag} (${user.id}) in guild ${guild.id}`);
+      
+      if (!guild) {
+        return interaction.reply({ 
+          content: '❌ This command can only be used in a server.', 
+          ephemeral: true 
+        });
+      }
+      
+      // Check for existing pending application (allow re-application after rejection)
+      const existing = await findActiveApplicationByUser(guild.id, user.id).catch(err => {
+        logger.error('Error checking for existing application', err);
+        return null;
       });
-    }
+      
+      if (existing) {
+        return interaction.reply({ 
+          content: '❌ You already have a pending builder application. Please wait for staff review before submitting a new one.', 
+          ephemeral: true 
+        });
+      }
 
     // Show first modal (Questions 1-5)
     const modal = new ModalBuilder()
@@ -187,18 +202,44 @@ export async function handleBuilderButton(interaction) {
       new ActionRowBuilder().addComponents(q5)
     );
 
-    await interaction.showModal(modal);
+      await interaction.showModal(modal);
+    }
+  } catch (err) {
+    logger.error('Error in handleBuilderButton', err);
+    if (!interaction.replied && !interaction.deferred) {
+      await interaction.reply({ 
+        content: '❌ An error occurred while starting your application. Please try again later.', 
+        ephemeral: true 
+      }).catch(() => {});
+    }
   }
 }
 
 // Handle modal submissions
 export async function handleBuilderModal(interaction) {
-  const { guild, user, customId, fields } = interaction;
-  
-  if (!customId.startsWith('builder_modal_')) return;
-  
-  const modalNumber = parseInt(customId.replace('builder_modal_', ''));
-  logger.info(`Builder application modal ${modalNumber} submitted by ${user.tag} (${user.id})`);
+  try {
+    const { guild, user, customId, fields } = interaction;
+    
+    if (!customId.startsWith('builder_modal_')) return;
+    
+    if (!guild) {
+      return interaction.reply({ 
+        content: '❌ This command can only be used in a server.', 
+        ephemeral: true 
+      });
+    }
+    
+    const modalNumber = parseInt(customId.replace('builder_modal_', ''));
+    
+    if (isNaN(modalNumber) || modalNumber < 1 || modalNumber > 3) {
+      logger.warn(`Invalid modal number: ${modalNumber} from user ${user.id}`);
+      return interaction.reply({ 
+        content: '❌ Invalid application form. Please start a new application.', 
+        ephemeral: true 
+      });
+    }
+    
+    logger.info(`Builder application modal ${modalNumber} submitted by ${user.tag} (${user.id})`);
 
   // Get existing application or create empty answers map
   let existingApp = await findApplicationByUser(guild.id, user.id);
@@ -459,6 +500,14 @@ export async function handleBuilderModal(interaction) {
         ephemeral: true 
       });
       logger.error(`Failed to send builder application to review channel for ${user.tag} (${user.id})`);
+    }
+  } catch (err) {
+    logger.error('Error in handleBuilderModal', err);
+    if (!interaction.replied && !interaction.deferred) {
+      await interaction.reply({ 
+        content: '❌ An error occurred while processing your application. Please try again later or contact staff.', 
+        ephemeral: true 
+      }).catch(() => {});
     }
   }
 }

@@ -5,6 +5,7 @@ import { jsonSettings } from '../storage/index.js';
 const SettingsSchema = new mongoose.Schema({
   guildId: { type: String, index: true },
   modlogChannelId: String,
+  builderReviewChannelId: String,
 }, { timestamps: true });
 
 export const SettingsModel = mongoose.models.Settings || mongoose.model('Settings', SettingsSchema);
@@ -30,6 +31,18 @@ export async function setModlogChannel(guildId, channelId) {
     const idx = jsonSettings.data.findIndex(d => d.guildId === guildId);
     if (idx === -1) jsonSettings.data.push({ guildId, modlogChannelId: channelId });
     else jsonSettings.data[idx].modlogChannelId = channelId;
+    await jsonSettings.save();
+  }
+}
+
+export async function setBuilderReviewChannel(guildId, channelId) {
+  if (config.storageBackend === 'mongodb' && mongoose.connection.readyState === 1) {
+    await SettingsModel.updateOne({ guildId }, { $set: { builderReviewChannelId: channelId } }, { upsert: true });
+  } else {
+    await jsonSettings.load();
+    const idx = jsonSettings.data.findIndex(d => d.guildId === guildId);
+    if (idx === -1) jsonSettings.data.push({ guildId, builderReviewChannelId: channelId });
+    else jsonSettings.data[idx].builderReviewChannelId = channelId;
     await jsonSettings.save();
   }
 }

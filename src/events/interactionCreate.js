@@ -1,6 +1,7 @@
 import { logger } from '../utils/logger.js';
 import { handleButton, handleModal, handleSelect } from '../modules/tickets/ticketHandlers.js';
 import { handleBuilderButton, handleBuilderModal } from '../modules/builder/builderHandlers.js';
+import { handleGiveawayButton } from '../modules/giveaway/giveawayHandlers.js';
 
 export default {
   name: 'interactionCreate',
@@ -12,8 +13,10 @@ export default {
         await cmd.execute(interaction, client);
 
       } else if (interaction.isButton()) {
-        // Check if it's a builder application button first
-        if (interaction.customId === 'builder_apply_start') {
+        // Check giveaway button first
+        if (interaction.customId === 'giveaway_enter') {
+          await handleGiveawayButton(interaction);
+        } else if (interaction.customId === 'builder_apply_start') {
           await handleBuilderButton(interaction);
         } else {
           await handleButton(interaction);

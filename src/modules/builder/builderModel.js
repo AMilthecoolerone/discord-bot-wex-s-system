@@ -7,31 +7,57 @@ import { logger } from '../../utils/logger.js';
 const BuilderApplicationSchema = new mongoose.Schema({
   guildId: { type: String, required: true, index: true },
   userId: { type: String, required: true, index: true },
-  status: { type: String, enum: ['pending', 'auto_rejected', 'approved', 'denied'], default: 'pending' },
+  applicationId: { type: String, unique: true, sparse: true },
+  status: { type: String, enum: ['pending', 'auto_rejected', 'approved', 'denied'], default: 'pending', index: true },
   answers: { type: Map, of: String, default: new Map() },
   autoRejected: { type: Boolean, default: false },
   rejectionReason: String,
   submittedAt: { type: Date, default: Date.now },
   reviewedBy: String,
   reviewedAt: Date,
+  reviewReason: String,
 }, { timestamps: true });
 
 export const BuilderApplicationModel = mongoose.models.BuilderApplication || mongoose.model('BuilderApplication', BuilderApplicationSchema);
 
-// Find active application by user
+// Find active (pending) application by user
 export async function findActiveApplicationByUser(guildId, userId) {
   if (config.storageBackend === 'mongodb' && mongoose.connection.readyState === 1) {
     return await BuilderApplicationModel.findOne({
       guildId,
       userId,
-      status: { $in: ['pending', 'auto_rejected'] }
+      status: 'pending'
     });
   } else {
     await jsonBuilderApplications.load();
     return jsonBuilderApplications.data.find(
       app => app.guildId === guildId && 
              app.userId === userId && 
-             (app.status === 'pending' || app.status === 'auto_rejected')
+             app.status === 'pending'
+    );
+  }
+}
+
+// Find all applications by status
+export async function findApplicationsByStatus(guildId, status) {
+  if (config.storageBackend === 'mongodb' && mongoose.connection.readyState === 1) {
+    return await BuilderApplicationModel.find({ guildId, status }).sort({ submittedAt: -1 });
+  } else {
+    await jsonBuilderApplications.load();
+    return jsonBuilderApplications.data
+      .filter(app => app.guildId === guildId && app.status === status)
+      .sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+  }
+}
+
+// Find application by ID
+export async function findApplicationById(guildId, applicationId) {
+  if (config.storageBackend === 'mongodb' && mongoose.connection.readyState === 1) {
+    return await BuilderApplicationModel.findOne({ guildId, applicationId });
+  } else {
+    await jsonBuilderApplications.load();
+    return jsonBuilderApplications.data.find(
+      app => app.guildId === guildId && app.applicationId === applicationId
     );
   }
 }
@@ -49,11 +75,17 @@ export async function findApplicationByUser(guildId, userId) {
   }
 }
 
+// Generate unique application ID
+function generateApplicationId() {
+  return `BA-${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
+}
+
 // Create application
 export async function createBuilderApplication(data) {
   const appData = {
     guildId: data.guildId,
     userId: data.userId,
+    applicationId: data.applicationId || generateApplicationId(),
     status: data.status || 'pending',
     answers: data.answers || new Map(),
     autoRejected: data.autoRejected || false,
